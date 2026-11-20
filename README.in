@@ -1,0 +1,102 @@
+🔍 Sequence Detector Using Mealy FSM
+
+FSM-Based Binary Sequence Detection System using Verilog HDL
+
+📌 Project Overview
+
+This project implements a binary sequence detector using a Finite State Machine (FSM) in Verilog HDL.
+
+The system is designed to detect the binary sequence 1011 using a Mealy state machine. The detector monitors serial input data and generates an output signal HIGH whenever the specified sequence is detected.
+
+The design supports overlapping sequence detection, allowing the system to identify multiple occurrences of the sequence in continuous input data.
+
+The project is developed using Verilog HDL and is intended for FPGA implementation using Xilinx Artix-7 architecture.
+
+✨ Features
+
+- FSM-based sequence detector design
+- Mealy state machine implementation
+- Binary sequence detection (1011)
+- Serial data input processing
+- Overlapping sequence detection
+- Synchronous reset functionality
+- Single-bit detection output
+- Verilog testbench for functional verification
+- FPGA implementation using Xilinx Vivado
+
+🛠️ Hardware Requirements
+
+- FPGA development board (Artix-7)
+- Clock input
+- Reset switch
+- Serial data input switch
+- Output LED for sequence detection
+- USB programming cable
+
+💻 Software Requirements
+
+- Xilinx Vivado Design Suite
+- Verilog HDL
+- VS Code / Notepad++
+- GitHub for source code management
+
+⚙️ Working Principle
+
+The sequence detector uses four FSM states to identify the binary pattern 1011.
+
+State| Description
+S0| Initial state
+S1| Detected 1
+S2| Detected 10
+S3| Detected 101
+
+When the input sequence reaches 1011, the output signal becomes HIGH, indicating successful sequence detection.
+
+The Mealy FSM generates the output based on the current state and input.
+
+📂 Project Structure
+
+Sequence-Detector-VLSI/
+│
+├── constraints/
+│   └── sequence_detector.xdc
+│
+├── src/
+│   └── sequence_detector.v
+│
+├── testbench/
+│   └── sequence_detector_tb.v
+│
+└── README.md
+
+🧪 Simulation and Verification
+
+The Verilog testbench is used to verify the functionality of the sequence detector.
+
+Test cases include:
+
+- Input sequence 1011 – Detection HIGH
+- Input sequence 1010 – No detection
+- Input sequence 1101 – No detection
+- Input sequence 1011011 – Multiple detections with overlap
+- Reset operation – Returns FSM to initial state
+
+📊 Expected Output
+
+Input Sequence| Output
+1011| 1
+1010| 0
+1101| 0
+1011011| 1, 0, 0, 1 at the corresponding detection cycles
+
+🎯 Applications
+
+- Digital communication systems
+- Serial data pattern recognition
+- VLSI digital circuit design
+- FPGA-based control systems
+- Protocol and data stream monitoring
+
+👩‍💻 Conclusion
+
+The Sequence Detector using Mealy FSM successfully identifies the binary pattern 1011 from a serial input stream. The project demonstrates FSM design, Verilog coding, simulation, and FPGA implementation concepts in VLSI design.
