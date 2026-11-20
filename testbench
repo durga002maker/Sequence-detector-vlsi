@@ -1,0 +1,129 @@
+
+`timescale 1ns / 1ps
+
+module sequence_detector_tb;
+
+    reg clk;
+    reg reset;
+    reg din;
+
+    wire detected;
+
+    integer detection_count;
+
+    // Instantiate Sequence Detector
+    sequence_detector uut (
+        .clk(clk),
+        .reset(reset),
+        .din(din),
+        .detected(detected)
+    );
+
+    // Clock generation: 10 ns period
+    always #5 clk = ~clk;
+
+    // Task to apply input bits and check output
+    task send_bit;
+        input bit_value;
+        input expected_output;
+
+        begin
+            @(negedge clk);
+            din = bit_value;
+
+            // Check Mealy output
+            #1;
+
+            if (detected !== expected_output) begin
+                $display("TEST FAILED!");
+                $display("Input = %b, Expected = %b, Actual = %b",
+                         bit_value, expected_output, detected);
+                $fatal;
+            end
+
+            if (detected)
+                detection_count = detection_count + 1;
+
+            $display("Input = %b | Output = %b | Time = %0t",
+                     din, detected, $time);
+
+            @(posedge clk);
+            #1;
+        end
+    endtask
+
+    initial begin
+
+        clk = 0;
+        reset = 1;
+        din = 0;
+        detection_count = 0;
+
+        // Reset FSM
+        repeat (2) @(posedge clk);
+        @(negedge clk);
+        reset = 0;
+
+        $display("SEQUENCE DETECTOR TEST STARTED");
+
+        // TEST 1: Detect 1011
+        $display("TEST 1: Detect sequence 1011");
+
+        send_bit(1, 0);
+        send_bit(0, 0);
+        send_bit(1, 0);
+        send_bit(1, 1);
+
+        $display("TEST 1 PASSED");
+
+        // TEST 2: No sequence detection - 1010
+        $display("TEST 2: Check sequence 1010");
+
+        @(negedge clk);
+        reset = 1;
+        @(posedge clk);
+        #1;
+        @(negedge clk);
+        reset = 0;
+
+        send_bit(1, 0);
+        send_bit(0, 0);
+        send_bit(1, 0);
+        send_bit(0, 0);
+
+        $display("TEST 2 PASSED");
+
+        // TEST 3: Overlapping sequence 1011011
+        $display("TEST 3: Overlapping sequence detection");
+
+        @(negedge clk);
+        reset = 1;
+        @(posedge clk);
+        #1;
+        @(negedge clk);
+        reset = 0;
+
+        send_bit(1, 0);
+        send_bit(0, 0);
+        send_bit(1, 0);
+        send_bit(1, 1);
+        send_bit(0, 0);
+        send_bit(1, 0);
+        send_bit(1, 1);
+
+        $display("TEST 3 PASSED");
+
+        // Final verification
+        if (detection_count == 3)
+            $display("ALL TESTS PASSED!");
+        else begin
+            $display("TEST FAILED: Expected 3 detections, got %0d",
+                     detection_count);
+            $fatal;
+        end
+
+        $finish;
+
+    end
+
+endmodule
