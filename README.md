@@ -1,2 +1,0 @@
-# Sequence-detector-vlsi
-Detector 
